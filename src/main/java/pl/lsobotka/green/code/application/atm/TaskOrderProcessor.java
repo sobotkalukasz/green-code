@@ -3,16 +3,9 @@ package pl.lsobotka.green.code.application.atm;
 import java.util.*;
 
 import pl.lsobotka.green.code.domain.atm.Atm;
-import pl.lsobotka.green.code.domain.atm.RegionCode;
 import pl.lsobotka.green.code.domain.atm.Task;
 
 public class TaskOrderProcessor {
-
-    public Map<RegionCode, List<Atm>> orderedAtms;
-
-    public TaskOrderProcessor() {
-        this.orderedAtms = new TreeMap<>();
-    }
 
     public static List<Task> orderTasks(final List<Task> tasks) {
         final List<Task> uniqueTasks = new ArrayList<>();
