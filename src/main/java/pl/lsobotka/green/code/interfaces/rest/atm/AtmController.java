@@ -19,7 +19,7 @@ public class AtmController {
 
     private final AtmService atmService;
 
-    public AtmController(AtmService atmService) {
+    public AtmController(final AtmService atmService) {
         this.atmService = atmService;
     }
 
