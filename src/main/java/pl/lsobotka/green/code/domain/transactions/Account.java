@@ -1,6 +1,7 @@
 package pl.lsobotka.green.code.domain.transactions;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 import org.springframework.lang.NonNull;
@@ -11,11 +12,11 @@ public class Account implements Comparable<Account> {
     private int debitCount;
     private int creditCount;
 
-    private BigDecimal balance;
+    private double balance;
 
     public Account(@NonNull String account) {
         this.accountNumber = new AccountNumber(account);
-        this.balance = BigDecimal.ZERO;
+        this.balance = 0.00;
     }
 
     public AccountNumber getAccount() {
@@ -31,17 +32,17 @@ public class Account implements Comparable<Account> {
     }
 
     public BigDecimal getBalance() {
-        return balance;
+        return BigDecimal.valueOf(balance).setScale(2, RoundingMode.HALF_UP);
     }
 
-    public void debit(final BigDecimal amount) {
+    public void debit(final double amount) {
         debitCount++;
-        balance = balance.subtract(amount);
+        balance -= amount;
     }
 
-    public void credit(final BigDecimal amount) {
+    public void credit(final double amount) {
         creditCount++;
-        balance = balance.add(amount);
+        balance += amount;
     }
 
     @Override

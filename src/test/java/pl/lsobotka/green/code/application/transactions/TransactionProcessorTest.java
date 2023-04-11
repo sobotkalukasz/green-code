@@ -1,6 +1,7 @@
 package pl.lsobotka.green.code.application.transactions;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,10 +23,10 @@ class TransactionProcessorTest {
         final String accountB = "B";
         final String accountC = "C";
 
-        final TransactionDto transactionA = new TransactionDto(accountA, accountC, BigDecimal.valueOf(15.50));
-        final TransactionDto transactionB = new TransactionDto(accountA, accountB, BigDecimal.valueOf(10.20));
-        final TransactionDto transactionC = new TransactionDto(accountA, accountC, BigDecimal.valueOf(30.50));
-        final TransactionDto transactionD = new TransactionDto(accountB, accountC, BigDecimal.valueOf(10.20));
+        final TransactionDto transactionA = new TransactionDto(accountA, accountC, 15.50);
+        final TransactionDto transactionB = new TransactionDto(accountA, accountB, 10.20);
+        final TransactionDto transactionC = new TransactionDto(accountA, accountC, 30.50);
+        final TransactionDto transactionD = new TransactionDto(accountB, accountC, 10.20);
 
         // When
         final List<Account> actual = TransactionProcessor.process(
@@ -38,19 +39,21 @@ class TransactionProcessorTest {
         assertThat(actualA.getAccount().value()).isEqualTo(accountA);
         assertThat(actualA.getCreditCount()).isEqualTo(0);
         assertThat(actualA.getDebitCount()).isEqualTo(3);
-        assertThat(actualA.getBalance()).isEqualTo(BigDecimal.valueOf(-15.50 - 10.20 - 30.50));
+        assertThat(actualA.getBalance()).isEqualTo(
+                BigDecimal.valueOf(-15.50 - 10.20 - 30.50).setScale(2, RoundingMode.HALF_UP));
 
         final Account actualB = actual.get(1);
         assertThat(actualB.getAccount().value()).isEqualTo(accountB);
         assertThat(actualB.getCreditCount()).isEqualTo(1);
         assertThat(actualB.getDebitCount()).isEqualTo(1);
-        assertThat(actualB.getBalance()).isEqualTo(BigDecimal.valueOf(0.00));
+        assertThat(actualB.getBalance()).isEqualTo(BigDecimal.valueOf(0.00).setScale(2, RoundingMode.HALF_UP));
 
         final Account actualC = actual.get(2);
         assertThat(actualC.getAccount().value()).isEqualTo(accountC);
         assertThat(actualC.getCreditCount()).isEqualTo(3);
         assertThat(actualC.getDebitCount()).isEqualTo(0);
-        assertThat(actualC.getBalance()).isEqualTo(BigDecimal.valueOf(015.50 + 30.50 + 10.20));
+        assertThat(actualC.getBalance()).isEqualTo(
+                BigDecimal.valueOf(15.50 + 30.50 + 10.20).setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
